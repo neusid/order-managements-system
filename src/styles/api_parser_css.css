@@ -1,0 +1,28 @@
+.input-url {
+    width: 100%;
+    height: 50px;
+    color: gray;
+    font-size: 12pt;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10p;
+    border-color: white;
+    background-color: white;
+}
+
+.btn-transform {
+    width: 100%;
+    height: 50px;
+    background-color: #0000FF;
+    border-color: transparent;
+    font-size: 12pt;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10p;
+}
+
+.tabel-responds {
+    width: 100%;
+    border-color: white;
+    border-style: double;
+}

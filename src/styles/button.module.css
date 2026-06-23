@@ -1,0 +1,13 @@
+.btnActionEedit {
+    color: #3085FE;
+    background-color: #3085FE;
+
+    &:hover {
+        border-color: var(--accent-border);
+    }
+}
+
+.btnActionDelete {
+    color: #FF7F74;
+    border-color: #FF7F74;
+}
