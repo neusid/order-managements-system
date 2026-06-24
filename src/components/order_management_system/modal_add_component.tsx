@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import EditIcon from '@mui/icons-material/Edit';
-
+import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import { Grid } from '@mui/material';
@@ -14,18 +14,6 @@ import grabLogo from '../../../src/assets/grab.svg';
 import tikiLogo from '../../../src/assets/tiki.svg';
 import jneLogo from '../../../src/assets/jne.svg';
 import jntLogo from '../../../src/assets/jnt.svg';
-
-const styleModal = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)', // Ini yang paling penting untuk centering
-    width: 500, // Sesuaikan lebar modal kamu
-    backgroundColor: 'background.paper',
-    borderRadius: '10px',
-    boxShadow: 24,
-    p: 4, // padding dalam modal
-};
 
 const modalStyle = {
     position: 'absolute',
@@ -41,7 +29,7 @@ const modalStyle = {
 
 type OrderStatus = 'New Order' | 'Shipped' | 'Canceled';
 
-type OrderDataTypes = {
+type OrderDataType = {
     orderId: number;
     orderNumber: number;
     status: OrderStatus;
@@ -50,98 +38,43 @@ type OrderDataTypes = {
     shippingService: string;
 };
 
-type Props = {
-    state: boolean;
-    eventOpen: () => void;
-    eventClose: () => void;
-    stateEditOrder: OrderDataTypes;
-    onConfirm: (data: OrderDataTypes) => void;
-};
 
-export default function BasicModal({ state, eventOpen, eventClose, stateEditOrder, onConfirm }: Props) {
+function createData(
+    orderId: number,
+    orderNumber: number,
+    status: OrderStatus,
+    item: number,
+    customerName: string,
+    shippingService: string,
+): OrderDataType {
+    return { orderId, orderNumber, status, item, customerName, shippingService };
+}
 
-    const statusMap = [
-        {
-            value: 'New Order',
-            label: 'New Order',
-        },
-        {
-            value: 'Shipped',
-            label: 'Shipped',
-        },
-        {
-            value: 'Canceled',
-            label: 'Canceled',
-        }
-    ];
 
-    const shippingMap = [
-        {
-            value: 'JNE Regular',
-            label: ' JNE Regular',
-            icon: jneLogo
-        },
-        {
-            value: 'Sicepat Gokil',
-            label: ' Sicepat Gokil',
-            icon: tikiLogo
-        },
-        {
-            value: 'Grab Instant',
-            label: ' Grab Instant',
-            icon: grabLogo
-        },
-        {
-            value: 'J&T Express',
-            label: ' J&T Express',
-            icon: jntLogo
-        },
-        {
-            value: 'Anteraja',
-            label: ' Anteraja',
-            icon: anterajaLogo
-        }
-    ];
+export default function ModalAddComponent({ state, eventOpen, eventClose, statusMap, shippingMap, order, setOrder }) {
 
-    function createData(
-        orderId: number,
-        orderNumber: number,
-        status: OrderStatus,
-        item: number,
-        customerName: string,
-        shippingService: string,
-    ): OrderDataTypes {
-        return {
-            orderId,
-            orderNumber,
-            status,
-            item,
-            customerName,
-            shippingService,
-        };
-    }
+    const HandleInput = (orderNumber: number, status: OrderStatus, item: number, customerName: string, shippingService: string) => {
+        let newData = createData(order.length + 1, orderNumber, status, item, customerName, shippingService);
+        setOrder([...order, newData]);
+    };
 
-    const HandleEventEditForm = (event: React.FormEvent<HTMLFormElement>) => {
+    const HandleEventForm = (event: React.FormEvent<HTMLFormElement>) => {
+        const formData = new FormData(event.currentTarget);
         event.preventDefault();
 
-        const formData = new FormData(event.currentTarget);
-
-        const formValues = createData(
-            stateEditOrder.orderId,
+        HandleInput(
             Number(formData.get('orderNumber')),
             formData.get('status') as OrderStatus,
             Number(formData.get('item')),
             String(formData.get('customerName')),
-            String(formData.get('shippingService'))
+            formData.get('shippingService') as string
         );
-
-        onConfirm(formValues);
         eventClose();
-    }
+    };
 
     return (
-        <div>
-            <Button variant="outlined" sx={{ color: '#3085FE', borderColor: '#3085FE' }} onClick={eventOpen}><EditIcon /></Button>
+        <>
+            <Button variant="contained" sx={{ color: '#ffffff', borderColor: '#ffffff' }} onClick={eventOpen}><AddIcon /></Button>
             <Modal
                 open={state}
                 onClose={eventClose}
@@ -161,20 +94,18 @@ export default function BasicModal({ state, eventOpen, eventClose, stateEditOrde
                         }}
                         container
                         autoComplete="off"
-                        onSubmit={HandleEventEditForm}
-
+                        onSubmit={HandleEventForm}
                     >
-                        <Grid sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px', width: '100%' }}>
-                            <h1 style={{ color: 'gray', margin: 0 }}>Change Order</h1>
+                        <Grid sx={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', width: '100%' }}>
+                            <h1 style={{ color: 'gray', margin: 0 }}>New Order</h1>
                         </Grid>
 
-                        <Grid sx={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '50px' }}>
+                        <Grid sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                             <TextField
-                                id="outlined-multiline-flexible"
+                                id="outlined-order-number"
                                 label="Order Number"
                                 name='orderNumber'
                                 type='number'
-                                defaultValue={stateEditOrder.orderNumber}
                                 style={{ width: 500 }}
                                 required
                             />
@@ -182,11 +113,10 @@ export default function BasicModal({ state, eventOpen, eventClose, stateEditOrde
 
                         <Grid sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                             <TextField
-                                id="outlined-multiline-flexible"
+                                id="outlined-item"
                                 label="Item"
                                 type='number'
                                 name='item'
-                                defaultValue={stateEditOrder.item}
                                 style={{ width: 500 }}
                                 required
                             />
@@ -194,11 +124,10 @@ export default function BasicModal({ state, eventOpen, eventClose, stateEditOrde
 
                         <Grid sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                             <TextField
-                                id="outlined-multiline-flexible"
+                                id="outlined-customer-name"
                                 label="Customer Name"
                                 type='text'
                                 name='customerName'
-                                defaultValue={stateEditOrder.customerName}
                                 style={{ width: 500 }}
                                 required
                             />
@@ -210,7 +139,6 @@ export default function BasicModal({ state, eventOpen, eventClose, stateEditOrde
                                 select
                                 label="Status"
                                 name='status'
-                                defaultValue={stateEditOrder.status}
                                 style={{ width: 240, height: 56 }}
                                 helperText="Please select status"
                                 required
@@ -227,13 +155,12 @@ export default function BasicModal({ state, eventOpen, eventClose, stateEditOrde
                                 select
                                 label="Shipping Service"
                                 name='shippingService'
-                                defaultValue={stateEditOrder.shippingService}
                                 style={{ width: 240, height: 56 }}
                                 helperText="Please select shipping"
                                 required
                             >
                                 {shippingMap.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
+                                    <MenuItem key={option.value} value={option.value} style={{ alignItems: 'center' }}>
                                         {option.label}
                                     </MenuItem>
                                 ))}
@@ -242,12 +169,12 @@ export default function BasicModal({ state, eventOpen, eventClose, stateEditOrde
 
                         <Grid sx={{ display: 'flex', justifyContent: 'center', marginTop: '24px', width: '100%' }}>
                             <Button type='submit' variant="outlined" sx={{ color: '#3085FE', borderColor: '#3085FE', width: 500, height: 56 }}>
-                                Change Order
+                                New Order
                             </Button>
                         </Grid>
                     </Grid>
                 </Box>
             </Modal>
-        </div>
-    );
+        </>
+    )
 }
