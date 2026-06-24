@@ -131,6 +131,14 @@ const OrderManagementComponent = () => {
         justifyContent: 'flex-start'
     }
 
+    const shippingTableStyle = {
+        justifyContent: 'flex-center'
+    }
+
+    const imageTabelStyle = {
+        width: '20px'
+    }
+
     return (
         <>
             <section id="spacer" style={modalSection}>
@@ -162,7 +170,13 @@ const OrderManagementComponent = () => {
                                     </TableCell>
                                     <TableCell align="right">{row.item}</TableCell>
                                     <TableCell align="right">{row.customerName}</TableCell>
-                                    <TableCell align="right">{row.shippingService}</TableCell>
+                                    <TableCell align="right" style={shippingTableStyle}>
+                                        {row.shippingService.match('JNE Regular') ? <><img src={jneLogo} alt="" style={imageTabelStyle} /> {row.shippingService}</> : <></>}
+                                        {row.shippingService.match('Sicepat Gokil') ? <><img src={anterajaLogo} style={imageTabelStyle} alt="" /> {row.shippingService}</> : <></>},
+                                        {row.shippingService.match('Grab Instant') ? <><img src={grabLogo} alt="" style={imageTabelStyle} /> {row.shippingService}</> : <></>},
+                                        {row.shippingService.match('J&T Express') ? <><img src={jntLogo} alt="" style={imageTabelStyle} /> {row.shippingService}</> : <></>},
+                                        {row.shippingService.match('Anteraja') ? <><img src={anterajaLogo} alt="" style={imageTabelStyle} /> {row.shippingService}</> : <></>}
+                                    </TableCell>
                                     <TableCell align="right" style={{ width: '150px' }}>
                                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
                                             <BasicModal

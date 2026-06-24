@@ -9,12 +9,6 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import { Grid } from '@mui/material';
 
-import anterajaLogo from '../../../src/assets/anteraja.svg';
-import grabLogo from '../../../src/assets/grab.svg';
-import tikiLogo from '../../../src/assets/tiki.svg';
-import jneLogo from '../../../src/assets/jne.svg';
-import jntLogo from '../../../src/assets/jnt.svg';
-
 const modalStyle = {
     position: 'absolute',
     top: '50%',
